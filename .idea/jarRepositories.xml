@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteRepositoriesConfiguration">
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Maven Central repository" />
+      <option name="url" value="https://repo1.maven.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jboss.community" />
+      <option name="name" value="JBoss Community repository" />
+      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="9517299b-3e1d-4ec4-b183-5084566b27a1" />
+      <option name="name" value="9517299b-3e1d-4ec4-b183-5084566b27a1" />
+      <option name="url" value="https://repository.apache.org/content/groups/snapshots/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="870245b6-e916-48ea-bf10-16f287048bf2" />
+      <option name="name" value="870245b6-e916-48ea-bf10-16f287048bf2" />
+      <option name="url" value="http://repository.primefaces.org/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="28ba7d61-9316-415e-b7ba-64a21845dfbd" />
+      <option name="name" value="28ba7d61-9316-415e-b7ba-64a21845dfbd" />
+      <option name="url" value="http://www.terracotta.org/download/reflector/releases" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="6da6de53-526a-460e-bd5c-0863c76df92b" />
+      <option name="name" value="6da6de53-526a-460e-bd5c-0863c76df92b" />
+      <option name="url" value="https://repository.jboss.org/nexus/content/groups/public-jboss/" />
+    </remote-repository>
+  </component>
+</project>
