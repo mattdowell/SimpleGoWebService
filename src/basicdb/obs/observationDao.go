@@ -66,7 +66,7 @@ func Read(id_to_read int32) SimpleDbType {
 //
 func Write(inType SimpleDbType) SimpleDbType {
 	db := mgr.Open()
-	sqlStatement := "INSERT INTO test_table (name, number) VALUES ($1, $2)"
+	sqlStatement := "INSERT INTO test_table (name, number) VALUES ($1, $2) RETURNING id"
 	id := 0
 	// Do the insert and query for the ID
 	err := db.QueryRow(sqlStatement, inType.Name, inType.Number).Scan(&id)
