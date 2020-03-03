@@ -1,24 +1,24 @@
 package obs
 
-
 import (
 	"GoWebService/src/basicdb/mgr"
 	"fmt"
 	"log"
 )
 
-
 /*
    Simple type struct for passing around data objects
- */
+*/
 type SimpleDbType struct {
 	Id     int32
 	Name   string
 	Number int32
 }
 
-//    Inserts a simple type into the db test_table
+//
+// Inserts a simple type into the db test_table
 // This is a method on the SimpleDbType struct
+//
 func (data *SimpleDbType) Insert() error {
 	db := mgr.Open()
 
@@ -30,12 +30,11 @@ func (data *SimpleDbType) Insert() error {
 	}
 	fmt.Println("New record ID is:", id)
 	mgr.Close(db)
-	return err;
+	return err
 }
 
-/**
-    Reads the given row ID into a simple struct and returns the struct
- */
+//    Reads the given row ID into a simple struct and returns the struct
+//
 func Read(id_to_read int32) SimpleDbType {
 	db := mgr.Open()
 	theReturn := SimpleDbType{}
@@ -59,4 +58,20 @@ func Read(id_to_read int32) SimpleDbType {
 	}
 	mgr.Close(db)
 	return theReturn
+}
+
+//
+// Writes the simple DB tpye to the database then returns it
+// with a new ID
+//
+func Write(inType SimpleDbType) SimpleDbType {
+	db := mgr.Open()
+	sqlStatement := "INSERT INTO test_table (name, number) VALUES ($1, $2)"
+	id := 0
+	// Do the insert and query for the ID
+	err := db.QueryRow(sqlStatement, inType.Name, inType.Number).Scan(&id)
+	if err != nil {
+		panic(err)
+	}
+	return Read(int32(id))
 }

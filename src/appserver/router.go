@@ -13,17 +13,6 @@ import (
 	"strconv"
 )
 
-//func HandleFunc(pattern string, f func(ResponseWriter, *Request)) {
-//	DefaultServeMux.HandleFunc(pattern, f)
-//}
-// Builds all the routes
-func AddRoutes() {
-	// build the routes
-	http.HandleFunc("/read/{id}", HandleReadObs)
-	http.HandleFunc("/write", HandleWriteObs)
-}
-
-
 // Builds all the routes
 // http://www.gorillatoolkit.org/pkg/mux
 //
@@ -38,35 +27,45 @@ func AddGorillaRoutes() {
 // Handles the observation read
 //
 func HandleReadObs(w http.ResponseWriter, r *http.Request) {
-		theType := obs.SimpleDbType{}
-		theType = obs.Read(getNumber(r))
-		w.WriteHeader(http.StatusOK)
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprintf(w, "%s", json.Marshall(theType))
+
+	theType := obs.SimpleDbType{}
+	theType = obs.Read(getNumber(r))
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintf(w, "%s", json.Marshall(theType))
 }
 
 //
 // Get the object number from the path
 //
 func getNumber(r *http.Request) int32 {
-	path := r.URL.Path
-	log.Println("Path: " + path)
-	i1, err := strconv.Atoi(path)
-	if err == nil {
-		fmt.Println(i1)
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+
+	i1, err := strconv.Atoi(idStr)
+	if err != nil {
+		fmt.Println("Error converting: " + idStr)
 		return 1
 	}
-
 	// Force to int32
 	return int32(i1)
 }
 
 // Writes a new record to the DB based on the JSON content of the body
 func HandleWriteObs(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Header().Set("Content-Type", "application/json")
-		// Create and write the Object
-		// Send the JSON back with the new ID
+	// Create and write the Object
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	bodyString := string(bodyBytes)
+	convertedType := json.UnMarshall(bodyString)
+	savedType := obs.Write(convertedType)
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	// Send the JSON back with the new ID
+	fmt.Fprintf(w, "%s", json.Marshall(savedType))
 }
 
 // Writes an image
