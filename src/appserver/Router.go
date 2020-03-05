@@ -1,6 +1,7 @@
 package appserver
 
 import (
+	"GoWebService/src/basicdb/mgr"
 	"GoWebService/src/basicdb/obs"
 	"GoWebService/src/json"
 	"bufio"
@@ -13,10 +14,13 @@ import (
 	"strconv"
 )
 
+var dbMgr *mgr.DBConn
+
 // Builds all the routes
 // http://www.gorillatoolkit.org/pkg/mux
 //
-func AddGorillaRoutes() {
+func AddGorillaRoutes(inDbConn *mgr.DBConn) {
+	dbMgr = inDbConn
 	r := mux.NewRouter()
 	r.HandleFunc("/read/{id}", HandleReadObs).Methods("GET")
 	r.HandleFunc("/write", HandleWriteObs).Methods("POST")
@@ -29,7 +33,7 @@ func AddGorillaRoutes() {
 func HandleReadObs(w http.ResponseWriter, r *http.Request) {
 
 	theType := obs.SimpleDbType{}
-	theType = obs.Read(getNumber(r))
+	theType = obs.Read(getNumber(r), dbMgr)
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprintf(w, "%s", json.Marshall(theType))
@@ -60,7 +64,7 @@ func HandleWriteObs(w http.ResponseWriter, r *http.Request) {
 	}
 	bodyString := string(bodyBytes)
 	convertedType := json.UnMarshall(bodyString)
-	savedType := obs.Write(convertedType)
+	savedType := obs.Write(convertedType, dbMgr)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")

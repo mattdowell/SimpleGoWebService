@@ -19,8 +19,8 @@ type SimpleDbType struct {
 // Inserts a simple type into the db test_table
 // This is a method on the SimpleDbType struct
 //
-func (data *SimpleDbType) Insert() error {
-	db := mgr.Open()
+func (data *SimpleDbType) Insert(dbMgr *mgr.DBConn) error {
+	db := dbMgr.Open()
 
 	sqlStatement := `INSERT INTO test_table ("name", "number") VALUES ($1, $2) RETURNING id`
 	id := 0
@@ -29,14 +29,14 @@ func (data *SimpleDbType) Insert() error {
 		panic(err)
 	}
 	fmt.Println("New record ID is:", id)
-	mgr.Close(db)
+	dbMgr.Close()
 	return err
 }
 
 //    Reads the given row ID into a simple struct and returns the struct
 //
-func Read(id_to_read int32) SimpleDbType {
-	db := mgr.Open()
+func Read(id_to_read int32, dbMgr *mgr.DBConn) SimpleDbType {
+	db := dbMgr.Open()
 	theReturn := SimpleDbType{}
 
 	sqlRead := fmt.Sprintf("select id, name, number from test_table where id = %d", id_to_read)
@@ -56,7 +56,7 @@ func Read(id_to_read int32) SimpleDbType {
 	if err != nil {
 		log.Fatal(err)
 	}
-	mgr.Close(db)
+	dbMgr.Close()
 	return theReturn
 }
 
@@ -64,8 +64,8 @@ func Read(id_to_read int32) SimpleDbType {
 // Writes the simple DB tpye to the database then returns it
 // with a new ID
 //
-func Write(inType SimpleDbType) SimpleDbType {
-	db := mgr.Open()
+func Write(inType SimpleDbType, dbMgr *mgr.DBConn) SimpleDbType {
+	db := dbMgr.Open()
 	sqlStatement := "INSERT INTO test_table (name, number) VALUES ($1, $2) RETURNING id"
 	id := 0
 	// Do the insert and query for the ID
@@ -73,5 +73,5 @@ func Write(inType SimpleDbType) SimpleDbType {
 	if err != nil {
 		panic(err)
 	}
-	return Read(int32(id))
+	return Read(int32(id), dbMgr)
 }
