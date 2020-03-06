@@ -42,5 +42,4 @@ func main() {
 	appserver.ServerMain(&params)
 
 	log.Println("Using Database: " + p["database"])
-
 }
